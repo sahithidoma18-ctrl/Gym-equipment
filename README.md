@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GymPulse - Gym Equipment Availability Checker 🏋️‍♂️
 
-## Getting Started
+A modern, responsive, full-stack Next.js web application designed to monitor real-time gym equipment availability, manage campus fitness center assets, and generate AI-driven maintenance insights powered by Google Gemini.
 
-First, run the development server:
+---
 
+## 🚀 Key Features
+
+- **Real-Time Equipment Monitoring**:
+  - Live availability dashboard tracking total, available, in-use, under-maintenance, and out-of-service machines.
+  - Dynamic availability percentage calculations.
+- **Zero-Setup Local Storage Architecture (No External Database Required)**:
+  - 100% persistent data storage in browser `localStorage`.
+  - Seamless multi-tab real-time reactivity using Custom Storage Events & the browser `storage` API.
+  - Pre-seeded with 10 realistic campus gym equipment items across Strength, Cardio, Free Weights, and Functional zones.
+  - One-click "Reset to Default Data" button in the navigation bar.
+- **Role-Based Admin Management**:
+  - Member view: View live status, filter by categories, search machines, inspect maintenance history, and export records.
+  - Admin view: Protected by PIN/passcode authentication (`admin123`). Admins can add, edit, change status, and delete equipment records with confirmation modals.
+- **Google Gemini AI Insights**:
+  - Server-side analysis via `/api/ai/insights` using `@google/generative-ai`.
+  - Generates equipment health summaries, maintenance urgency priorities, high-demand category observations, and utilization recommendations.
+- **Analytics & Visualizations**:
+  - Interactive status distribution pie chart and category breakdown bar chart built with Recharts.
+- **Data Exporting**:
+  - Instant CSV export with equipment name, category, status, location, and maintenance logs.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS with custom sleek dark gym aesthetic
+- **Icons**: Lucide React
+- **Charts**: Recharts
+- **Persistence**: Browser `localStorage` (No Supabase dependency)
+- **AI**: Google Gemini API (`gemini-1.5-flash`)
+- **Validation**: Zod
+
+---
+
+## 📋 Getting Started
+
+### 1. Prerequisites
+Ensure you have Node.js 18+ installed on your computer.
+
+### 2. Configure Environment Variables
+Copy `.env.example` to `.env.local` and add your Google Gemini API key:
+```bash
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+```
+> Obtain a free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+
+### 3. Run Development Server
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your web browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔐 Admin Passcode
+To test adding, editing, or deleting equipment:
+1. Click **Admin Login** in the top navigation bar.
+2. Enter the default admin PIN:
+   ```text
+   admin123
+   ```
+3. You now have full management privileges. Click **Exit Admin** at any time to return to the public member view.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 💾 Local Storage Architecture
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The application replaces external database configurations (such as Supabase) with a robust browser `localStorage` repository located at [`src/lib/storage.ts`](src/lib/storage.ts):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Storage Key | Purpose |
+|---|---|
+| `gym_equipment_inventory_v1` | Stores the complete array of equipment items, status history, and maintenance notes |
+| `gym_admin_auth_v1` | Persists the administrator session status (`true` / `false`) |
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All modifications emit a `gym-equipment-updated` CustomEvent and trigger native `storage` events so multiple browser windows or tabs remain in sync without needing a page refresh.
