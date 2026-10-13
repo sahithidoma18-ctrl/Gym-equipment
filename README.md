@@ -82,3 +82,5 @@ The application replaces external database configurations (such as Supabase) wit
 | `gym_admin_auth_v1` | Persists the administrator session status (`true` / `false`) |
 
 All modifications emit a `gym-equipment-updated` CustomEvent and trigger native `storage` events so multiple browser windows or tabs remain in sync without needing a page refresh.
+"# Gym-equipment" 
+"# Gym-equipment" 
